@@ -34,4 +34,4 @@ app.get('/restartRouters', (req, res)=>{
 
 const port=process.argv[2]
 const [,,,router1pass, router2pass]=process.argv
-app.listen(port,()=>console.log('listening on port' + port))
+app.listen(port,()=>console.log('listening on port ' + port))
