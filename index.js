@@ -27,11 +27,11 @@ app.get('/', (req, res)=>{
 });
 
 app.get('/restartRouters', (req, res)=>{
-    exec(`{ node restartRouter.js '192.168.0.2' "${routerPasses[0]}" && echo 'vodafone router restarted' || echo 'failed to restart vodafone router'; } && { node restartSuperhub3.js '192.168.0.1' "${routerPasses[1]}" 2>/dev/null && echo 'superhub3 restarted' || echo 'failed to restart superhub3'}`, (err, stdo, stderr)=>{
+    exec(`{ node restartRouter.js '192.168.0.2' "${router1pass}" && echo 'vodafone router restarted' || echo 'failed to restart vodafone router'; } && { node restartSuperhub3.js '192.168.0.1' "${router2pass}" 2>/dev/null && echo 'superhub3 restarted' || echo 'failed to restart superhub3'}`, (err, stdo, stderr)=>{
         console.log(stdo)
     });     
 });
 
 const port=process.argv[2]
-const [,,,...routerPasses]=process.argv
+const [,,,router1pass, router2pass]=process.argv
 app.listen(port,()=>console.log('listening on port' + port))
