@@ -1,5 +1,6 @@
-const { exec } = require("child_process")
 const express = require('express');
+const restartVodafone= require('./restartVodafone')
+const restartSuperhub3 =require('./restartSuperhub3')
 const app = express();
 
 const htmlBody=`<html>
@@ -24,14 +25,25 @@ async function restartRouter(){
 `
 app.get('/', (req, res)=>{
     res.send(htmlBody)
-});
+})
 
-app.get('/restartRouters', (req, res)=>{
-    exec(`{ node restartRouter.js '192.168.0.2' "${router1pass}" && echo 'vodafone router restarted' || echo 'failed to restart vodafone router'; } && { node restartSuperhub3.js '192.168.0.1' "${router2pass}" 2>/dev/null && echo 'superhub3 restarted' || echo 'failed to restart superhub3'}`, (err, stdo, stderr)=>{
-        console.log(stdo)
-    });     
-});
+app.get('/restartRouters', async (req, res)=>{
+    await restartVodafone(vodafoneIp,vodafonePass)
+    await restartSuperhub3(superHub3Ip,superHub3Pass)
+})
 
+app.get('/restartVodafone', async (req, res)=>{
+    await restartVodafone(vodafoneIp,vodafonePass)
+})
+
+app.get('/restartSuperhub3', async (req, res)=>{
+    await restartSuperhub3(superHub3Ip,superHub3Pass)
+})
+
+// node index.js <port> <router1ip> <router2ip>
+const vodafonePass=process.env.vodafonePass
+const superHub3Pass=process.env.superHub3Pass
 const port=process.argv[2]
-const [,,,router1pass, router2pass]=process.argv
+const [,,,vodafoneIp, superHub3Ip]=process.argv
+
 app.listen(port,()=>console.log('listening on port ' + port))
